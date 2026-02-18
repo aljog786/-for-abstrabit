@@ -31,7 +31,31 @@ export default function DashboardClient({ initialUserEmail }: DashboardClientPro
 
     useEffect(() => {
         fetchBookmarks()
-    }, [fetchBookmarks])
+
+        // Realtime subscription
+        const channel = supabase
+            .channel('bookmarks-realtime')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'bookmarks',
+                },
+                (payload) => {
+                    if (payload.eventType === 'INSERT') {
+                        setBookmarks((prev) => [payload.new as Bookmark, ...prev])
+                    } else if (payload.eventType === 'DELETE') {
+                        setBookmarks((prev) => prev.filter((b) => b.id !== payload.old.id))
+                    }
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [supabase, fetchBookmarks])
 
     return (
         <div className="flex min-h-screen flex-col items-center bg-zinc-50 font-sans dark:bg-black p-8">
