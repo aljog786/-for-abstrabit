@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import LoginButton from "@/components/LoginButton";
 import Link from "next/link";

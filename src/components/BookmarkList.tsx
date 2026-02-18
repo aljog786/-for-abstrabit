@@ -1,6 +1,6 @@
 'use client'
 
-import { Bookmark } from '@/lib/types'
+import { Bookmark } from '@/types/bookmark'
 import { createClient } from '@/lib/supabase/client'
 
 interface BookmarkListProps {

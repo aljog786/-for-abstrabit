@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Bookmark } from '@/lib/types'
+import { Bookmark } from '@/types/bookmark'
 import BookmarkForm from '@/components/BookmarkForm'
 import BookmarkList from '@/components/BookmarkList'
 import { signOut } from '@/app/auth/actions'
