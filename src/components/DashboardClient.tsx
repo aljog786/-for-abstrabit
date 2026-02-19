@@ -43,10 +43,19 @@ export default function DashboardClient({ initialUserEmail }: DashboardClientPro
                     table: 'bookmarks',
                 },
                 (payload) => {
+                    console.log('Realtime update received:', payload)
                     if (payload.eventType === 'INSERT') {
-                        setBookmarks((prev) => [payload.new as Bookmark, ...prev])
+                        const newBookmark = payload.new as Bookmark
+                        setBookmarks((prev) => {
+                            // Prevent duplicates
+                            if (prev.find(b => b.id === newBookmark.id)) return prev
+                            return [newBookmark, ...prev]
+                        })
                     } else if (payload.eventType === 'DELETE') {
                         setBookmarks((prev) => prev.filter((b) => b.id !== payload.old.id))
+                    } else if (payload.eventType === 'UPDATE') {
+                        const updatedBookmark = payload.new as Bookmark
+                        setBookmarks((prev) => prev.map((b) => b.id === updatedBookmark.id ? updatedBookmark : b))
                     }
                 }
             )
